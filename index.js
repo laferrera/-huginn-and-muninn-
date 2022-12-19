@@ -1,8 +1,8 @@
-const { SerialPort } = require("serialport");
+const SerialPort = require("serialport");
 const EventEmitter = require("events");
 // const { Readline } = require("@serialport/parser-readline");
 
-class Crow extends EventEmitter{
+class Crow extends EventEmitter {
   constructor(cb) {
     super();
     crowPort: null;
@@ -23,7 +23,7 @@ class Crow extends EventEmitter{
       this.emit("initialized");
       // return this;
     });
-  }
+  };
 
   setCallback = (cb) => {
     this.crowPort.on("data", function (data) {
@@ -46,11 +46,13 @@ class Crow extends EventEmitter{
         ) {
           console.log("found crow");
           crowModem = new SerialPort(
-            { path: device.path, baudRate: 115200 },
+            // Serialport 10.x  uses an object instead of a string
+            // { path: device.path, baudRate: 115200 }, 
+            device.path,{ baudRate: 115200},
             function (err) {
               if (err) {
                 // reject("error connecting to crow!");
-                // return console.log("Error: ", err.message);
+                return console.log("Error: ", err.message);
               } else {
                 console.log("Connected to Crow");
                 resolve(crowModem);
@@ -123,4 +125,4 @@ module.exports = (id, cb) => {
       resolve(crow);
     });
   });
-}
+};

@@ -9,7 +9,6 @@
   "author": "Jason LaFerrera",
   "license": "ISC",
   "dependencies": {
-    "serialport": "^10.3.0"
+    "serialport": "^9.2.8"
   }
-
 }
