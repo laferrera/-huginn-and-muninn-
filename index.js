@@ -1,20 +1,27 @@
 const { SerialPort } = require("serialport");
+const EventEmitter = require("events");
 // const { Readline } = require("@serialport/parser-readline");
 
-class Crow {
+class Crow extends EventEmitter{
   constructor(cb) {
+    super();
     crowPort: null;
+    initialized: false;
+  }
 
-    return this.fetchModems().then((modem) => {
+  initialize = async (cb) => {
+    this.fetchModems().then((modem) => {
       // NOTE: It is crucial that we use arrow
       // functions here so that we may preserve
       // the `this` context.
       this.crowPort = modem;
+      // this.initialized = true;
       if (cb) {
         this.setCallback(cb);
       }
       this.helloWorld();
-      return this;
+      this.emit("initialized");
+      // return this;
     });
   }
 
@@ -107,4 +114,13 @@ input[1].change = function (state) print('Hello, Molly!') end`;
   };
 }
 
-exports.Crow = Crow;
+module.exports = (id, cb) => {
+  return new Promise((resolve, reject) => {
+    const crow = new Crow();
+    crow.initialize();
+    crow.on("initialized", () => {
+      //todo something with cb...
+      resolve(crow);
+    });
+  });
+}
